@@ -1,0 +1,43 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<GridPane fx:controller="sample.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="5" vgap="5" stylesheets="@darkmode.css">
+
+    <TextField fx:id="textField" text="5732857438957" GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="300" prefHeight="60" GridPane.columnSpan="4"/>
+    <Button fx:id="button1" text="1" GridPane.columnIndex="0" GridPane.rowIndex="1" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="button2" text="2" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="button3" text="3" GridPane.columnIndex="2" GridPane.rowIndex="1" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttonplus" text="+" GridPane.columnIndex="3" GridPane.rowIndex="1" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+
+    <Button fx:id="button4" text="4" GridPane.columnIndex="0" GridPane.rowIndex="2" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="button5" text="5" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="button6" text="6" GridPane.columnIndex="2" GridPane.rowIndex="2" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttonminus" text="-" GridPane.columnIndex="3" GridPane.rowIndex="2" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+
+    <Button fx:id="button7" text="7" GridPane.columnIndex="0" GridPane.rowIndex="3" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="button8" text="8" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="button9" text="9" GridPane.columnIndex="2" GridPane.rowIndex="3" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttonmultiply" text="x" GridPane.columnIndex="3" GridPane.rowIndex="3" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+
+    <Button fx:id="buttondel" text="(" GridPane.columnIndex="0" GridPane.rowIndex="4" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttonans" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttonbracket" text=")" GridPane.columnIndex="2" GridPane.rowIndex="4" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttondivide" text="/" GridPane.columnIndex="3" GridPane.rowIndex="4" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+
+    <Button fx:id="buttonsin" text="sin" GridPane.columnIndex="0" GridPane.rowIndex="5" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttoncos" text="cos" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttondecimal" text="." GridPane.columnIndex="2" GridPane.rowIndex="5" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+    <Button fx:id="buttonequals" text="=" GridPane.columnIndex="3" GridPane.rowIndex="5" prefWidth="80" prefHeight="50" onAction="#onButtonClicked"/>
+
+
+
+
+
+
+
+
+</GridPane>
