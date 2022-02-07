@@ -1,2 +1,2 @@
 # Calculator-FX
-A calculator with legit graphics and lost of functions
+A calculator with legit graphics and lots of functions
