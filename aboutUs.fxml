@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="sample.Controller"
+            stylesheets="@darkmode.css">
+
+    <Button fx:id="someAboutUsNode" prefWidth="0" prefHeight="0"/>
+
+    <top>
+            <MenuBar>
+                <Menu text="Settings">
+                    <items>
+                        <MenuItem text="Basic" onAction="#turnOnBasic"/>
+                        <MenuItem text="Scientific" onAction="#turnOnScientific" />
+                        <MenuItem text="Preferences"/>
+                        <MenuItem text="About Us" />
+                    </items>
+                </Menu>
+                <Menu text="Donate">
+                    <items>
+                        <MenuItem text="Donate $1"/>
+                        <MenuItem text="Donate $2"/>
+                        <MenuItem text="Donate $5"/>
+                        <MenuItem text="Donate $10"/>
+                        <MenuItem text="Donate $25"/>
+                    </items>
+                </Menu>
+            </MenuBar>
+
+    </top>
+    <center>
+        <Label text="This calculator was brought to you by a nerd with no friends who has an obsession with calculators for some reason" wrapText="true" prefWidth="200"/>
+    </center>
+</BorderPane>

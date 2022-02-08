@@ -1,0 +1,79 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane fx:controller="sample.Controller"
+            xmlns:fx="http://javafx.com/fxml" stylesheets="@darkmode.css">
+
+    <Button fx:id="someScientificNode" prefWidth="0" prefHeight="0"/>
+    <top>
+        <MenuBar>
+            <Menu text="Settings">
+                <items>
+                    <MenuItem text="Basic" onAction="#turnOnBasic"/>
+                    <MenuItem text="Scientific" />
+                    <MenuItem text="Preferences"/>
+                    <MenuItem text="About Us" onAction="#turnOnAboutUs"/>
+                </items>
+            </Menu>
+            <Menu text="Donate">
+                <items>
+                    <MenuItem text="Donate $1"/>
+                    <MenuItem text="Donate $2"/>
+                    <MenuItem text="Donate $5"/>
+                    <MenuItem text="Donate $10"/>
+                    <MenuItem text="Donate $25"/>
+                </items>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <center>
+        <GridPane hgap="5" vgap="5" onKeyPressed="#onKeyPressed">
+
+            <TextField fx:id="textField" text="0" GridPane.columnIndex="0" GridPane.rowIndex="0" prefWidth="400" prefHeight="100"
+                       GridPane.columnSpan="5" alignment="CENTER_RIGHT" editable="false" onKeyPressed="#onKeyPressed"/>
+
+            <Button fx:id="lbracket" text="(" GridPane.columnIndex="0" GridPane.rowIndex="1" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button fx:id="rbracket" text=")" GridPane.columnIndex="1" GridPane.rowIndex="1" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button fx:id="del" text="DEL" GridPane.columnIndex="2" GridPane.rowIndex="1" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button fx:id="clear" text="C" GridPane.columnIndex="3" GridPane.rowIndex="1" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button fx:id="del1" text="DEL" GridPane.columnIndex="4" GridPane.rowIndex="1" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+
+            <Button text="" GridPane.columnIndex="0" GridPane.rowIndex="2" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button text="" GridPane.columnIndex="1" GridPane.rowIndex="2" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button text="" GridPane.columnIndex="2" GridPane.rowIndex="2" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="3" GridPane.rowIndex="2" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="4" GridPane.rowIndex="2" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+
+            <Button text="" GridPane.columnIndex="0" GridPane.rowIndex="3" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button text="" GridPane.columnIndex="1" GridPane.rowIndex="3" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button text="" GridPane.columnIndex="2" GridPane.rowIndex="3" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="3" GridPane.rowIndex="3" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="4" GridPane.rowIndex="3" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+
+            <Button text="" GridPane.columnIndex="0" GridPane.rowIndex="4" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button text="" GridPane.columnIndex="1" GridPane.rowIndex="4" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button text="" GridPane.columnIndex="2" GridPane.rowIndex="4" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="3" GridPane.rowIndex="4" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="4" GridPane.rowIndex="4" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+
+            <Button text="" GridPane.columnIndex="0" GridPane.rowIndex="5" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button text="" GridPane.columnIndex="1" GridPane.rowIndex="5" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button text="" GridPane.columnIndex="2" GridPane.rowIndex="5" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="3" GridPane.rowIndex="5" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="4" GridPane.rowIndex="5" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+
+            <Button text="" GridPane.columnIndex="0" GridPane.rowIndex="6" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button text="" GridPane.columnIndex="1" GridPane.rowIndex="6" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button text="" GridPane.columnIndex="2" GridPane.rowIndex="6" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="3" GridPane.rowIndex="6" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="4" GridPane.rowIndex="6" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+
+            <Button text="" GridPane.columnIndex="0" GridPane.rowIndex="7" prefHeight="65" prefWidth="84" onAction="#onBracketClicked" />
+            <Button text="" GridPane.columnIndex="1" GridPane.rowIndex="7" prefHeight="65" prefWidth="84" onAction="#onBracketClicked"/>
+            <Button text="" GridPane.columnIndex="2" GridPane.rowIndex="7" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="3" GridPane.rowIndex="7" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            <Button text="" GridPane.columnIndex="4" GridPane.rowIndex="7" prefHeight="65" prefWidth="84" onAction="#onBackspaceClicked"/>
+            
+        </GridPane>
+    </center>
+</BorderPane>
