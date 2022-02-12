@@ -5,11 +5,11 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
+<BorderPane fx:id="borderPanePreferences" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="sample.Controller"
-            stylesheets="@darkmode.css">
+            fx:controller="Controller">
 
     <Button fx:id="someAboutUsNode" prefWidth="0" prefHeight="0"/>
 
@@ -20,7 +20,6 @@
                         <MenuItem text="Basic" onAction="#turnOnBasic"/>
                         <MenuItem text="Scientific" onAction="#turnOnScientific" />
                         <MenuItem text="Preferences"/>
-                        <MenuItem text="About Us" />
                     </items>
                 </Menu>
                 <Menu text="Donate">
@@ -36,6 +35,29 @@
 
     </top>
     <center>
-        <Label text="This calculator was brought to you by a nerd with no friends who has an obsession with calculators for some reason" wrapText="true" prefWidth="200"/>
+<!--        <Label 12 105 80text="This calculator was brought to you by a nerd with no friends who has an obsession with calculators for some reason" wrapText="true" prefWidth="200"/>-->
+
+        <GridPane>
+            <Label text=" Background Color" prefWidth="200" prefHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+            <ColorPicker fx:id="colorPickerBg" prefWidth="120" prefHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="1" onAction="#backgroundChanged">
+                <value>
+                    <Color blue="0.262" green="0.243" red="0.215"/>
+                </value>
+            </ColorPicker>
+
+            <Label text=" Hue Color" prefWidth="200" prefHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <ColorPicker fx:id="colorPickerHue" prefWidth="120" prefHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="3" onAction="#hueChanged">
+                <value>
+                    <Color blue="0.313" green="0.411" red="0.047"/>
+                </value>
+            </ColorPicker>
+
+            <Label text=" Theme" prefWidth="200" prefHeight="30" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <ToggleButton text="dark" GridPane.columnIndex="0" GridPane.rowIndex="5" onAction="#darkmodeToggled"/>
+            <ToggleButton text="grey" GridPane.columnIndex="0" GridPane.rowIndex="6" onAction="#greymodeToggled"/>
+            <ToggleButton text="light" GridPane.columnIndex="0" GridPane.rowIndex="7" onAction="#lightmodeToggled"/>
+
+        </GridPane>
     </center>
 </BorderPane>

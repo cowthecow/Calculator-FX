@@ -1,23 +1,37 @@
-package sample;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class Controller {
 
+
+    private Scene currentScene;
     private String mainText = "0";
+    private ArrayList<Integer> replacedNegatives = new ArrayList<>();
+
+    //Hex numbers
+    public static String cssFile = "lightmode.css";
 
     @FXML
     TextField textField;
+
+    @FXML
+    ColorPicker colorPickerBg;
+
+    @FXML
+    ColorPicker colorPickerHue;
 
     @FXML
     Button someScientificNode;
@@ -29,18 +43,96 @@ public class Controller {
     Button someAboutUsNode;
 
     @FXML
+    BorderPane borderPaneScientific;
+
+    @FXML
+    BorderPane borderPaneStandard;
+
+    @FXML
+    BorderPane borderPanePreferences;
+
+    @FXML
+    private void backgroundChanged() {
+//        Color background = colorPickerBg.getValue();
+//        base = String.format("#%02x%02x%02x", (int) (background.getRed() * 255), (int) (background.getGreen() * 255), (int) (background.getBlue() * 255));
+//        borderPanePreferences.setStyle(getCSS());
+    }
+
+    @FXML
+    private void hueChanged() {
+//        Color hue = colorPickerHue.getValue();
+//        accent = String.format("#%02x%02x%02x", (int) (hue.getRed() * 255), (int) (hue.getGreen() * 255), (int) (hue.getBlue() * 255));
+//        borderPanePreferences.setStyle(getCSS());
+    }
+
+    @FXML
+    private void lightmodeToggled(ActionEvent e) throws IOException{
+        cssFile = "lightmode.css";
+
+        Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
+
+        currentScene = new Scene(root, 420,585);
+        currentScene.getStylesheets().clear();
+        currentScene.getStylesheets().add(cssFile);
+        stage.setTitle("QuickMaths V1.4");
+        stage.setScene(currentScene);
+    }
+
+
+    @FXML
+    private void darkmodeToggled(ActionEvent e) throws IOException{
+        cssFile = "darkmode.css";
+
+        Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
+
+        currentScene = new Scene(root, 420,585);
+        currentScene.getStylesheets().clear();
+        currentScene.getStylesheets().add(cssFile);
+        stage.setTitle("QuickMaths V1.4");
+        stage.setScene(currentScene);
+    }
+
+    @FXML
+    private void greymodeToggled(ActionEvent e) throws IOException{
+        cssFile = "greymode.css";
+
+        Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
+        Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
+
+        currentScene = new Scene(root, 420,585);
+        currentScene.getStylesheets().clear();
+        currentScene.getStylesheets().add(cssFile);
+        stage.setTitle("QuickMaths V1.4");
+        stage.setScene(currentScene);
+    }
+
+    @FXML
+    private void onEqualsClicked(ActionEvent e) {
+        mainText = Mechanics.evaluatePostfix(Mechanics.infixToPostfix(mainText));
+        textField.setText(mainText);
+    }
+
+    //SCENE TRANSITION METHODS
+    @FXML
     private void turnOnBasic(ActionEvent e) throws IOException {
         Stage stage;
 
         try {
             stage = (Stage) (someScientificNode).getScene().getWindow();
-        }catch (RuntimeException ignore) {
+        } catch (RuntimeException ignore) {
             stage = (Stage) (someAboutUsNode).getScene().getWindow();
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("simple.fxml"));
-        stage.setTitle("QuickMaths V1.3 SIMPLE");
-        stage.setScene(new Scene(root, 420, 585));
+        currentScene = new Scene(root, 420, 585);
+        currentScene.getStylesheets().clear();
+        currentScene.getStylesheets().add(cssFile);
+
+        stage.setTitle("QuickMaths V1.4 SIMPLE");
+        stage.setScene(currentScene);
+
     }
 
     @FXML
@@ -49,13 +141,17 @@ public class Controller {
 
         try {
             stage = (Stage) (someStandardNode).getScene().getWindow();
-        }catch (RuntimeException ignore) {
+        } catch (RuntimeException ignore) {
             stage = (Stage) (someAboutUsNode).getScene().getWindow();
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("scientific.fxml"));
-        stage.setTitle("QuickMaths V1.3 SCIENTIFIC");
-        stage.setScene(new Scene(root, 420, 585));
+        currentScene = new Scene(root, 420, 585);
+        currentScene.getStylesheets().clear();
+        currentScene.getStylesheets().add(cssFile);
+
+        stage.setTitle("QuickMaths V1.4 SCIENTIFIC");
+        stage.setScene(currentScene);
     }
 
     @FXML
@@ -64,15 +160,20 @@ public class Controller {
 
         try {
             stage = (Stage) (someStandardNode).getScene().getWindow();
-        }catch (RuntimeException ignore) {
+        } catch (RuntimeException ignore) {
             stage = (Stage) (someScientificNode).getScene().getWindow();
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
-        stage.setTitle("QuickMaths V1.3");
-        stage.setScene(new Scene(root, 420, 585));
+        currentScene = new Scene(root, 420, 585);
+        currentScene.getStylesheets().clear();
+        currentScene.getStylesheets().add(cssFile);
+
+        stage.setTitle("QuickMaths V1.4");
+        stage.setScene(currentScene);
     }
 
+    //USER INPUT HANDLING
     @FXML
     private void onKeyPressed(KeyEvent e) {
         if (e.getCode().toString().contains("DIGIT")) {
@@ -93,7 +194,7 @@ public class Controller {
 
     @FXML
     private void onNumberClicked(ActionEvent e) {
-        if((mainText.charAt(mainText.length()-1)) == ')') return;
+        if ((mainText.charAt(mainText.length() - 1)) == ')') return;
 
         if (mainText.equals("0")) mainText = "";
         mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
@@ -142,8 +243,19 @@ public class Controller {
             int insertLocation = lastOperator == 0 ? 0 : lastOperator + 1;
             StringBuilder inserter = new StringBuilder(mainText);
             inserter.insert(insertLocation, "-");
+
             mainText = inserter.toString();
 
+            if (mainText.contains("--")) {
+                if (mainText.indexOf("--") == 0) {
+                    mainText = mainText.replaceAll("--", "");
+                } else {
+                    mainText = mainText.replaceAll("--", "+");
+                }
+            }
+            if (mainText.contains("++")) {
+                mainText = mainText.replaceAll("\\+\\+", "+");
+            }
         }
 
         textField.setText(mainText);
@@ -175,7 +287,7 @@ public class Controller {
             }
         }
         if (e.getSource().toString().contains(")")) {
-            if(!validRightBracket(mainText)) return;
+            if (!validRightBracket(mainText)) return;
             if (mainText.equals("0")) {
                 mainText = "(";
             } else {

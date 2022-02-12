@@ -1,5 +1,3 @@
-package sample;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,9 +8,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 400, 575));
+        Parent root = FXMLLoader.load(getClass().getResource("scientific.fxml"));
+        Scene scene = new Scene(root, 420, 585);
+        scene.getStylesheets().add("lightmode.css");
+
+        primaryStage.setTitle("QuickMaths V1.3 SCIENTIFIC");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
@@ -21,5 +22,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-
-//hi.
