@@ -30,18 +30,23 @@ public class Mechanics {
     //If its something like division, subtraction, or modulus, pop 2 numbers and use the second number popped to perform on the first
 
     public static boolean isSingleOperation(char c) {
-        return c == '√' || c == '²' || c == 's' || c == 'c';
+        return c == '√' || c == '²' || c == 's' || c == 'c' || c == '!';
     }
 
     public static boolean isDoubleOperation(char c) {
-        return c == '+' || c == '-' || c == '*' || c == '/' || c == '%';
+        return c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == 'l';
     }
 
     public static String infixToPostfix(String infix) throws RuntimeException {
+        boolean operatorExisting = false;
+
         //Edit the infix so it replaces certain characters and expressions
         infix = infix.replaceAll("mod", "%");
+        infix = infix.replaceAll("log", "l");
         infix = infix.replaceAll("sin", "s");
         infix = infix.replaceAll("cos", "c");
+        infix = infix.replaceAll("e", "2.718281828459045235360287");
+        infix = infix.replaceAll("pi", "3.141592653589793238462643");
 
         StringBuilder postfix = new StringBuilder();
         Stack<Character> operators = new Stack<>();
@@ -52,13 +57,14 @@ public class Mechanics {
             if (Character.isDigit(c) || c == '.') {
                 postfix.append(c);
             } else if (isSingleOperation(c)) {
+                operatorExisting = true;
                 if (c == '√') {
                     savedOperator = c;
                 } else {
                     postfix.append(c);
                 }
             } else if (isDoubleOperation(c)) {
-                System.out.println(c);
+                operatorExisting = true;
                 if (savedOperator != ' ') {
                     postfix.append(savedOperator);
                     savedOperator = ' ';
@@ -92,11 +98,11 @@ public class Mechanics {
         while (operators.size() > 0) {
             postfix.append(operators.pop());
         }
-        return postfix.toString();
+        return operatorExisting ? postfix.toString() : postfix.append("~").toString();
     }
 
-    public static String evaluatePostfix(String postfix) throws RuntimeException{
-        System.out.println(postfix);
+    public static BigDecimal evaluatePostfix(String postfix) throws RuntimeException{
+        if(postfix.contains("~")) return new BigDecimal(postfix.substring(0,postfix.length()-1));
         Stack<BigDecimal> numbers = new Stack<>();
 
         for (int i = 0; i < postfix.length(); i++) {
@@ -127,6 +133,9 @@ public class Mechanics {
                         break;
                     case '√':
                         numbers.push(BigDecimal.valueOf(Math.sqrt(a.intValue())));
+                        break;
+                    case '!':
+                        numbers.push(bigDecimalFactorial(a));
                         break;
                 }
 
@@ -165,7 +174,14 @@ public class Mechanics {
         //6 7 8 354 /*8√-+ -> 6 0.15 8sqrt-+ >
 
         BigDecimal lastOneStanding = numbers.peek().round(new MathContext(24));
-        return lastOneStanding.toString();
+        return lastOneStanding;
+    }
+
+    public static BigDecimal bigDecimalFactorial(BigDecimal sus) {
+        if(sus.equals(BigDecimal.ZERO)) return BigDecimal.ZERO;
+        if(sus.compareTo(BigDecimal.ONE) <= 0) return BigDecimal.ONE;
+
+        return sus.multiply(bigDecimalFactorial(sus.subtract(BigDecimal.ONE)));
     }
 
 

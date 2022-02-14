@@ -1,6 +1,7 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,7 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class Controller {
@@ -19,6 +20,7 @@ public class Controller {
 
     private Scene currentScene;
     private String mainText = "0";
+
     private ArrayList<Integer> replacedNegatives = new ArrayList<>();
 
     //Hex numbers
@@ -66,13 +68,13 @@ public class Controller {
     }
 
     @FXML
-    private void lightmodeToggled(ActionEvent e) throws IOException{
+    private void lightmodeToggled(ActionEvent e) throws IOException {
         cssFile = "lightmode.css";
 
         Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
 
-        currentScene = new Scene(root, 420,585);
+        currentScene = new Scene(root, 420, 585);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
         stage.setTitle("QuickMaths V1.4");
@@ -81,13 +83,13 @@ public class Controller {
 
 
     @FXML
-    private void darkmodeToggled(ActionEvent e) throws IOException{
+    private void darkmodeToggled(ActionEvent e) throws IOException {
         cssFile = "darkmode.css";
 
         Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
 
-        currentScene = new Scene(root, 420,585);
+        currentScene = new Scene(root, 420, 585);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
         stage.setTitle("QuickMaths V1.4");
@@ -95,13 +97,13 @@ public class Controller {
     }
 
     @FXML
-    private void greymodeToggled(ActionEvent e) throws IOException{
+    private void greymodeToggled(ActionEvent e) throws IOException {
         cssFile = "greymode.css";
 
         Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
 
-        currentScene = new Scene(root, 420,585);
+        currentScene = new Scene(root, 420, 585);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
         stage.setTitle("QuickMaths V1.4");
@@ -110,8 +112,10 @@ public class Controller {
 
     @FXML
     private void onEqualsClicked(ActionEvent e) {
-        mainText = Mechanics.evaluatePostfix(Mechanics.infixToPostfix(mainText));
+        BigDecimal result = Mechanics.evaluatePostfix(Mechanics.infixToPostfix(mainText));
+        mainText = result.toPlainString();
         textField.setText(mainText);
+        textField.appendText("");
     }
 
     //SCENE TRANSITION METHODS
@@ -194,10 +198,20 @@ public class Controller {
 
     @FXML
     private void onNumberClicked(ActionEvent e) {
-        if ((mainText.charAt(mainText.length() - 1)) == ')') return;
+        char previousChar = mainText.charAt(mainText.length() - 1);
 
+        if (previousChar == ')' || previousChar == 'e' || previousChar == 'i') return;
         if (mainText.equals("0")) mainText = "";
-        mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+
+        System.out.println(e.getSource().toString());
+        if(e.getSource().toString().contains("\uD835\uDCEE")) {
+            mainText += "e";
+        }else if(e.getSource().toString().contains("\uD835\uDF45")) {
+            mainText += "pi";
+        }else {
+            mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+        }
+
         textField.setText(mainText);
     }
 
@@ -205,8 +219,15 @@ public class Controller {
     private void onOperatorClicked(ActionEvent e) {
         if (mainText.length() == 0) return;
         //Anything that counts as a number, including superscript
-        if (Character.isDigit(mainText.charAt(mainText.length() - 1)) || mainText.charAt(mainText.length() - 1) == '²' || mainText.charAt(mainText.length() - 1) == ')') {
-            mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+        if (Character.isDigit(mainText.charAt(mainText.length() - 1)) || mainText.charAt(mainText.length() - 1) == '²' || mainText.charAt(mainText.length() - 1) == '!' || mainText.charAt(mainText.length() - 1) == ')' || mainText.charAt(mainText.length() - 1) == 'e' || mainText.charAt(mainText.length() - 1) == 'i') {
+            if (e.getSource().toString().contains("mod")) {
+                mainText += "mod";
+            }else if (e.getSource().toString().contains("log")) {
+                mainText += "log";
+            }else {
+                mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+            }
+
             textField.setText(mainText);
         }
     }
@@ -216,12 +237,15 @@ public class Controller {
     private void onAdvancedOperatorClicked(ActionEvent e) {
         String input = e.getSource().toString();
 
+        System.out.println(input);
         if (mainText.length() == 0) return;
         if (!Character.isDigit(mainText.charAt(mainText.length() - 1))) return;
 
         if (input.contains("power")) {
             mainText += "²";
-        } else if (input.contains("root") || input.contains("inverse")) {
+        } else if(input.contains("factorial")) {
+            mainText += "!";
+        }else if (input.contains("root") || input.contains("inverse")) {
             int lastOperator = 0;
             for (int i = 0; i < mainText.length(); i++) {
                 if (isOperator(mainText.charAt(i))) lastOperator = i;
@@ -298,6 +322,7 @@ public class Controller {
         }
         textField.setText(mainText);
     }
+
 
     private boolean validRightBracket(String s) {
         int lbrackets = 0, rbrackets = 0;
