@@ -1,7 +1,6 @@
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Stack;
-import java.util.function.BinaryOperator;
 
 public class Mechanics {
 
@@ -29,6 +28,23 @@ public class Mechanics {
     //If its something like square root, square, or factorial, pop a number from the stack, perform the operation, and push it down
     //If its something like division, subtraction, or modulus, pop 2 numbers and use the second number popped to perform on the first
 
+
+    private static String lastOperator;
+    private static String lastNumber;
+
+    public static String lastOperation() {
+        try {
+            return " " + (isSingleOperation(lastOperator.charAt(0)) ? "" : lastNumber) + lastOperator;
+        }catch (NullPointerException e) {
+            return " " + lastOperator;
+        }
+    }
+
+    public static void eraseLastOperation() {
+        lastNumber = "";
+        lastOperator = "";
+    }
+
     public static boolean isSingleOperation(char c) {
         return c == '√' || c == '²' || c == 's' || c == 'c' || c == '!';
     }
@@ -37,7 +53,40 @@ public class Mechanics {
         return c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == 'l';
     }
 
+    public static String replaceAllNegatives(String s) {
+        StringBuilder newString = new StringBuilder();
+        boolean wait = false;
+
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if(isDoubleOperation(c) && wait) {
+                wait = false;
+                newString.append("~");
+            }
+
+            if(c == '-') {
+                try {
+                    if(isDoubleOperation(s.charAt(i-1)) || s.charAt(i-1) == '(') {
+                        wait = true;
+                    }else {
+                        newString.append(c);
+                    }
+                }catch (StringIndexOutOfBoundsException e) {
+                    wait = true;
+                }
+            }else {
+                newString.append(c);
+            }
+        }
+
+        if(wait) newString.append("~");
+
+        return newString.toString();
+    }
+
     public static String infixToPostfix(String infix) throws RuntimeException {
+        System.out.println("Negative Removed Infix: " + infix);
         boolean operatorExisting = false;
 
         //Edit the infix so it replaces certain characters and expressions
@@ -47,6 +96,7 @@ public class Mechanics {
         infix = infix.replaceAll("cos", "c");
         infix = infix.replaceAll("e", "2.718281828459045235360287");
         infix = infix.replaceAll("pi", "3.141592653589793238462643");
+        infix = infix.replaceAll("\\(-", "(0-");
 
         StringBuilder postfix = new StringBuilder();
         Stack<Character> operators = new Stack<>();
@@ -54,9 +104,10 @@ public class Mechanics {
 
         for (int i = 0; i < infix.length(); i++) {
             char c = infix.charAt(i);
-            if (Character.isDigit(c) || c == '.') {
+            if (Character.isDigit(c) || c == '.' || c == 'E' || c == '~') {
                 postfix.append(c);
             } else if (isSingleOperation(c)) {
+                lastOperator = String.valueOf(c);
                 operatorExisting = true;
                 if (c == '√') {
                     savedOperator = c;
@@ -64,6 +115,7 @@ public class Mechanics {
                     postfix.append(c);
                 }
             } else if (isDoubleOperation(c)) {
+                lastOperator = String.valueOf(c);
                 operatorExisting = true;
                 if (savedOperator != ' ') {
                     postfix.append(savedOperator);
@@ -71,7 +123,6 @@ public class Mechanics {
                 }
                 postfix.append(" ");
                 if (operators.size() == 0) {
-                    System.out.println(c + " was pushed onto stack");
                     operators.push(c);
                 } else {
                     if (getOperatorPrecedence(operators.peek()) > getOperatorPrecedence(c)) {
@@ -80,7 +131,6 @@ public class Mechanics {
                         }
                         operators.push(c);
                     } else {
-                        System.out.println(c + " was pushed onto stack");
                         operators.push(c);
                     }
                 }
@@ -93,16 +143,18 @@ public class Mechanics {
                 operators.pop();
             }
         }
-        if(savedOperator != ' ') postfix.append(savedOperator);
+        if (savedOperator != ' ') postfix.append(savedOperator);
 
         while (operators.size() > 0) {
             postfix.append(operators.pop());
         }
-        return operatorExisting ? postfix.toString() : postfix.append("~").toString();
+
+        return operatorExisting ? postfix.toString() : infix + lastOperation();
     }
 
-    public static BigDecimal evaluatePostfix(String postfix) throws RuntimeException{
-        if(postfix.contains("~")) return new BigDecimal(postfix.substring(0,postfix.length()-1));
+    public static BigDecimal evaluatePostfix(String postfix) throws RuntimeException, StackOverflowError{
+        System.out.println("Negative Removed Postfix: " + postfix);
+
         Stack<BigDecimal> numbers = new Stack<>();
 
         for (int i = 0; i < postfix.length(); i++) {
@@ -110,20 +162,38 @@ public class Mechanics {
 
             if (Character.isDigit(c) || c == '.') {
                 StringBuilder number = new StringBuilder(c);
+                StringBuilder multiplier = new StringBuilder("0");
+                boolean appendingToMultiplier = false;
 
                 while (true) {
-                    number.append(c);
+                    if(c != 'E') {
+                        if (appendingToMultiplier) multiplier.append(c);
+                        else number.append(c);
+                    }
+
                     i++;
                     c = postfix.charAt(i);
-                    if (!(Character.isDigit(c) || c == '.')) {
+                    if (!(Character.isDigit(c) || c == '.' || c == 'E')) {
                         break;
                     }
+                    if(c == 'E') appendingToMultiplier = true;
                 }
-                numbers.push(new BigDecimal(number.toString()));
+
+                int intMultiplier = Integer.parseInt(multiplier.toString());
+                BigDecimal multiplierValue = (BigDecimal.TEN.pow(intMultiplier == 0 ? 0 : intMultiplier-1));
+                BigDecimal value = new BigDecimal(number.toString()).multiply(multiplierValue);
+
+                lastNumber = value.toString();
+
+                numbers.push(value);
 
                 //If you don't put i-- you're fucked up
                 i--;
-            } else if (isSingleOperation(c)) {
+            } else if(c == '~') {
+                BigDecimal a = numbers.pop();
+                a = a.round(new MathContext(24));
+                numbers.push(a.multiply(new BigDecimal(-1)));
+            }else if (isSingleOperation(c)) {
                 BigDecimal a = numbers.pop();
                 a = a.round(new MathContext(24));
 
@@ -169,17 +239,15 @@ public class Mechanics {
                 //% means modulus here not percent
             }
         }
-
-
         //6 7 8 354 /*8√-+ -> 6 0.15 8sqrt-+ >
 
-        BigDecimal lastOneStanding = numbers.peek().round(new MathContext(24));
-        return lastOneStanding;
+
+        return numbers.peek().round(new MathContext(24));
     }
 
-    public static BigDecimal bigDecimalFactorial(BigDecimal sus) {
-        if(sus.equals(BigDecimal.ZERO)) return BigDecimal.ZERO;
-        if(sus.compareTo(BigDecimal.ONE) <= 0) return BigDecimal.ONE;
+    public static BigDecimal bigDecimalFactorial(BigDecimal sus) throws StackOverflowError {
+        if (sus.equals(BigDecimal.ZERO)) return BigDecimal.ZERO;
+        if (sus.compareTo(BigDecimal.ONE) <= 0) return BigDecimal.ONE;
 
         return sus.multiply(bigDecimalFactorial(sus.subtract(BigDecimal.ONE)));
     }
@@ -198,7 +266,7 @@ public class Mechanics {
     }
 
     public static void main(String[] args) {
-        System.out.println(evaluatePostfix(infixToPostfix("(2²+3)*√4")));
+        System.out.println(replaceAllNegatives("-55+-66-9/-33"));
     }
 
 }

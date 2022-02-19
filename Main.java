@@ -8,11 +8,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("scientific.fxml"));
-        Scene scene = new Scene(root, 420, 585);
+        System.out.println('-' == '~');
+        Parent root = FXMLLoader.load(getClass().getResource("simple.fxml"));
+        Scene scene = new Scene(root, 460, 575);
         scene.getStylesheets().add("lightmode.css");
 
-        primaryStage.setTitle("QuickMaths V1.3 SCIENTIFIC");
+        primaryStage.setTitle("QuickMaths V1.5 STANDARD");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

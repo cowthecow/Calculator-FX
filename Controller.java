@@ -13,13 +13,18 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 
 public class Controller {
 
+    //bugz
+    //sin, cos, log, ln, nroot, npower don't even work
+    //square root now unviable
 
     private Scene currentScene;
     private String mainText = "0";
+    private String untrimmedText = "0";
 
     private ArrayList<Integer> replacedNegatives = new ArrayList<>();
 
@@ -68,54 +73,54 @@ public class Controller {
     }
 
     @FXML
-    private void lightmodeToggled(ActionEvent e) throws IOException {
-        cssFile = "lightmode.css";
+    private void themeToggled(ActionEvent e) throws IOException {
+        if(e.getSource().toString().contains("light")) cssFile = "lightmode.css";
+        if(e.getSource().toString().contains("dark")) cssFile = "darkmode.css";
+        if(e.getSource().toString().contains("grey")) cssFile = "greymode.css";
+        if(e.getSource().toString().contains("black")) cssFile = "blackmode.css";
 
         Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
         Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
 
-        currentScene = new Scene(root, 420, 585);
+        currentScene = new Scene(root, 460, 575);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
-        stage.setTitle("QuickMaths V1.4");
+        stage.setTitle("QuickMaths V1.5");
         stage.setScene(currentScene);
     }
 
-
-    @FXML
-    private void darkmodeToggled(ActionEvent e) throws IOException {
-        cssFile = "darkmode.css";
-
-        Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
-
-        currentScene = new Scene(root, 420, 585);
-        currentScene.getStylesheets().clear();
-        currentScene.getStylesheets().add(cssFile);
-        stage.setTitle("QuickMaths V1.4");
-        stage.setScene(currentScene);
-    }
-
-    @FXML
-    private void greymodeToggled(ActionEvent e) throws IOException {
-        cssFile = "greymode.css";
-
-        Stage stage = (Stage) (someAboutUsNode).getScene().getWindow();
-        Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
-
-        currentScene = new Scene(root, 420, 585);
-        currentScene.getStylesheets().clear();
-        currentScene.getStylesheets().add(cssFile);
-        stage.setTitle("QuickMaths V1.4");
-        stage.setScene(currentScene);
-    }
 
     @FXML
     private void onEqualsClicked(ActionEvent e) {
-        BigDecimal result = Mechanics.evaluatePostfix(Mechanics.infixToPostfix(mainText));
-        mainText = result.toPlainString();
+
+        try {
+            System.out.println("Infix: " + untrimmedText);
+            BigDecimal result = Mechanics.evaluatePostfix(Mechanics.infixToPostfix(Mechanics.replaceAllNegatives(untrimmedText))).round(new MathContext(24));
+
+
+            mainText = trim(result.toPlainString(), 24);
+            untrimmedText = trim(result.toPlainString(), 24);
+        }catch (StackOverflowError error) {
+            mainText = "Overflow";
+            untrimmedText = "Overflow";
+        }
+
         textField.setText(mainText);
         textField.appendText("");
+    }
+
+    //Efficient algorithm
+
+    private String trim(String str, int length) {
+        if(str.length() >= 100000) return "Overflow";
+        if (str.length() > length) {
+            if(str.contains(".")) {
+                return str.substring(0, length);
+            }else {
+                return new StringBuilder(str).insert(1, ".").substring(0, length+1) + "E" + str.length();
+            }
+        }
+        return str;
     }
 
     //SCENE TRANSITION METHODS
@@ -130,11 +135,11 @@ public class Controller {
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("simple.fxml"));
-        currentScene = new Scene(root, 420, 585);
+        currentScene = new Scene(root, 460, 575);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
 
-        stage.setTitle("QuickMaths V1.4 SIMPLE");
+        stage.setTitle("QuickMaths V1.5 STANDARD");
         stage.setScene(currentScene);
 
     }
@@ -150,11 +155,11 @@ public class Controller {
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("scientific.fxml"));
-        currentScene = new Scene(root, 420, 585);
+        currentScene = new Scene(root, 460, 575);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
 
-        stage.setTitle("QuickMaths V1.4 SCIENTIFIC");
+        stage.setTitle("QuickMaths V1.5 SCIENTIFIC");
         stage.setScene(currentScene);
     }
 
@@ -169,11 +174,11 @@ public class Controller {
         }
 
         Parent root = FXMLLoader.load(getClass().getResource("aboutUs.fxml"));
-        currentScene = new Scene(root, 420, 585);
+        currentScene = new Scene(root, 460, 575);
         currentScene.getStylesheets().clear();
         currentScene.getStylesheets().add(cssFile);
 
-        stage.setTitle("QuickMaths V1.4");
+        stage.setTitle("QuickMaths V1.5");
         stage.setScene(currentScene);
     }
 
@@ -182,7 +187,10 @@ public class Controller {
     private void onKeyPressed(KeyEvent e) {
         if (e.getCode().toString().contains("DIGIT")) {
             if (mainText.equals("0")) mainText = "";
+            if (untrimmedText.equals("0")) untrimmedText = "";
+
             mainText += e.getCode().toString().substring(5, 6);
+            untrimmedText += e.getCode().toString().substring(5, 6);
         }
         if (e.getCode().toString().equals("BACK_SPACE")) {
             if (mainText.length() == 1) {
@@ -190,8 +198,6 @@ public class Controller {
             } else {
                 mainText = mainText.substring(0, mainText.length() - 1);
             }
-        } else {
-            System.out.println(e.getCode().toString());
         }
         textField.setText(mainText);
     }
@@ -203,13 +209,16 @@ public class Controller {
         if (previousChar == ')' || previousChar == 'e' || previousChar == 'i') return;
         if (mainText.equals("0")) mainText = "";
 
-        System.out.println(e.getSource().toString());
         if(e.getSource().toString().contains("\uD835\uDCEE")) {
             mainText += "e";
+            untrimmedText += "e";
         }else if(e.getSource().toString().contains("\uD835\uDF45")) {
             mainText += "pi";
+            untrimmedText += "pi";
         }else {
             mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+            untrimmedText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+
         }
 
         textField.setText(mainText);
@@ -222,29 +231,34 @@ public class Controller {
         if (Character.isDigit(mainText.charAt(mainText.length() - 1)) || mainText.charAt(mainText.length() - 1) == '²' || mainText.charAt(mainText.length() - 1) == '!' || mainText.charAt(mainText.length() - 1) == ')' || mainText.charAt(mainText.length() - 1) == 'e' || mainText.charAt(mainText.length() - 1) == 'i') {
             if (e.getSource().toString().contains("mod")) {
                 mainText += "mod";
+                untrimmedText += "mod";
             }else if (e.getSource().toString().contains("log")) {
                 mainText += "log";
+                untrimmedText += "log";
             }else {
                 mainText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
+                untrimmedText += e.getSource().toString().charAt(e.getSource().toString().length() - 2);
             }
 
             textField.setText(mainText);
         }
     }
 
+    //− - -
     //Advanced operators include squares, square roots, and inverse function
     @FXML
     private void onAdvancedOperatorClicked(ActionEvent e) {
         String input = e.getSource().toString();
 
-        System.out.println(input);
         if (mainText.length() == 0) return;
         if (!Character.isDigit(mainText.charAt(mainText.length() - 1))) return;
 
         if (input.contains("power")) {
             mainText += "²";
+            untrimmedText += "²";
         } else if(input.contains("factorial")) {
             mainText += "!";
+            untrimmedText += "!";
         }else if (input.contains("root") || input.contains("inverse")) {
             int lastOperator = 0;
             for (int i = 0; i < mainText.length(); i++) {
@@ -258,28 +272,56 @@ public class Controller {
                 inserter.insert(lastOperator == 0 ? 0 : lastOperator + 1, "1/");
             }
             mainText = inserter.toString();
+            untrimmedText = inserter.toString();
+
+
         } else if (input.contains("negate")) {
-            int lastOperator = 0;
-            for (int i = 0; i < mainText.length(); i++) {
-                if (isOperator(mainText.charAt(i))) lastOperator = i;
-            }
+            //Even newer algorithm
+            //Don't use brackets
+            //Before the infix postfix, scan every bracket:
+            //If there is something like +-, replace - with another symbol detonating negation
+            //If there is an operator, bracket, or nothing before it replace it
 
-            int insertLocation = lastOperator == 0 ? 0 : lastOperator + 1;
-            StringBuilder inserter = new StringBuilder(mainText);
-            inserter.insert(insertLocation, "-");
+            //New algorithm for negate
+            //Go from the start of the list and find the last operator
+            //If you find an addition, multiplication, ..., go place down negative symbol
+            //If you find a subtraction,
+            //If there is a number behind the symbol, place down negate
+            //Else, if there is an operator behind it, delete the symbol
 
-            mainText = inserter.toString();
+            int location = 0;
+            boolean insertOrDelete = true;
 
-            if (mainText.contains("--")) {
-                if (mainText.indexOf("--") == 0) {
-                    mainText = mainText.replaceAll("--", "");
-                } else {
-                    mainText = mainText.replaceAll("--", "+");
+            for(int i = 0; i < mainText.length(); i++) {
+                if(isOperator(mainText.charAt(i))) {
+                    if(mainText.charAt(i) == '-') {
+                        try {
+                            if(isOperator(mainText.charAt(i-1))) {
+                                //If this is an operator, this means that this negative sign is a negate not a subtract
+                                insertOrDelete = false;
+                                location = i;
+                            }else {
+                                insertOrDelete = true;
+                                location = i+1;
+                            }
+                        }catch (StringIndexOutOfBoundsException outOfBounds) {
+                            System.out.println("sus.");
+                            insertOrDelete = false;
+                            location = 0;
+                        }
+                    }else {
+                        insertOrDelete = true;
+                        location = i+1;
+                    }
                 }
             }
-            if (mainText.contains("++")) {
-                mainText = mainText.replaceAll("\\+\\+", "+");
+
+            if(insertOrDelete) {
+                mainText = new StringBuilder(mainText).insert(location,'-').toString();
+            }else {
+                mainText = new StringBuilder(mainText).deleteCharAt(location).toString();
             }
+            untrimmedText = mainText;
         }
 
         textField.setText(mainText);
@@ -289,11 +331,15 @@ public class Controller {
     private void onBackspaceClicked(ActionEvent e) {
         if (e.getSource().toString().contains("clear")) {
             mainText = "0";
+            untrimmedText = "0";
+            Mechanics.eraseLastOperation();
         } else if (e.getSource().toString().contains("del")) {
             if (mainText.length() == 1) {
                 mainText = "0";
+                untrimmedText = "0";
             } else if (mainText.length() > 1) {
                 mainText = mainText.substring(0, mainText.length() - 1);
+                untrimmedText = mainText.substring(0, mainText.length() - 1);
             }
         }
         textField.setText(mainText);
@@ -304,9 +350,11 @@ public class Controller {
         if (e.getSource().toString().contains("(")) {
             if (mainText.equals("0")) {
                 mainText = "(";
+                untrimmedText += "(";
             } else {
                 if (isOperator(mainText.charAt(mainText.length() - 1))) {
                     mainText += "(";
+                    untrimmedText += "(";
                 }
             }
         }
@@ -317,6 +365,7 @@ public class Controller {
             } else {
                 if (!isOperator(mainText.charAt(mainText.length() - 1))) {
                     mainText += ")";
+                    untrimmedText += ")";
                 }
             }
         }
